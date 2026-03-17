@@ -12,8 +12,8 @@ export interface AuthRequest extends Request {
 }
 
 export interface PaginationQuery {
-  page?: number;
-  limit?: number;
+  page?: string | number;
+  limit?: string | number;
   search?: string;
   sortBy?: string;
   sortOrder?: "asc" | "desc";
