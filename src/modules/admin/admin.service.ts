@@ -3,6 +3,8 @@ import { AdminLoginInput } from "./admin.schema";
 import { comparePassword } from "@/lib/hash";
 import { generateTokenPair, verifyRefreshToken } from "@/lib/jwt";
 import { buildPaginatedResult, getPaginationParams } from "@/lib/pagination";
+import { sellerApprovalEmailTemplate, sellerRejectionEmailTemplate, sendEmail } from "@/lib/email";
+import { logger } from "@/config/logger";
 
 export const AdminService = {
   async login(data: AdminLoginInput) {
@@ -78,6 +80,93 @@ export const AdminService = {
           createdAt: true,
           _count: { select: { orders: true } },
         },
+      }),
+      db.user.count({ where }),
+    ]);
+
+    return buildPaginatedResult(users, total, page, limit);
+  },
+
+    async getSellerById(id: string) {
+    return db.seller.findUnique({
+      where: { id },
+      include: {
+        subscription: true,
+        wallet: true,
+        _count: { select: { products: true, orderItems: true, ratings: true } },
+      },
+    });
+  },
+
+  async approveSeller(id: string) {
+    const seller = await db.seller.findUnique({ where: { id } });
+    if (!seller) throw new Error("Seller not found");
+    if (seller.status === "APPROVED") throw new Error("Seller already approved");
+
+    await db.seller.update({ where: { id }, data: { status: "APPROVED" } });
+
+    try {
+      await sendEmail({
+        to: seller.email,
+        subject: "Seller Account Approved - MediStore",
+        html: sellerApprovalEmailTemplate(seller.businessName),
+      });
+    } catch (err) {
+      logger.error("Seller approval email failed:", err);
+    }
+    return true;
+  },
+
+  async rejectSeller(id: string, reason?: string) {
+    const seller = await db.seller.findUnique({ where: { id } });
+    if (!seller) throw new Error("Seller not found");
+
+    await db.seller.update({ where: { id }, data: { status: "REJECTED" } });
+
+    try {
+      await sendEmail({
+        to: seller.email,
+        subject: "Seller Application Update - MediStore",
+        html: sellerRejectionEmailTemplate(seller.businessName, reason),
+      });
+    } catch (err) {
+      logger.error("Seller rejection email failed:", err);
+    }
+    return true;
+  },
+
+  async blacklistSeller(id: string) {
+    const seller = await db.seller.findUnique({ where: { id } });
+    if (!seller) throw new Error("Seller not found");
+    const newStatus = seller.status === "BLACKLISTED" ? "APPROVED" : "BLACKLISTED";
+    return db.seller.update({ where: { id }, data: { status: newStatus } });
+  },
+
+  // users
+
+    async getUsers(query: { page?: string; limit?: string; status?: string; search?: string }) {
+    const { skip, take, page, limit } = getPaginationParams(query);
+    const where: Record<string, unknown> = {};
+    if (query.status) where.status = query.status;
+    if (query.search) {
+      where.OR = [
+        { name: { contains: query.search, mode: "insensitive" } },
+        { email: { contains: query.search, mode: "insensitive" } },
+        { phone: { contains: query.search, mode: "insensitive" } },
+      ];
+    }
+
+    const [users, total] = await Promise.all([
+      db.user.findMany({
+        where,
+        skip,
+        take,
+        select: {
+          id: true, name: true, email: true, phone: true, status: true,
+          isVerified: true, createdAt: true,
+          _count: { select: { orders: true } },
+        },
+        orderBy: { createdAt: "desc" },
       }),
       db.user.count({ where }),
     ]);
