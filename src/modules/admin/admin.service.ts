@@ -94,7 +94,7 @@ export const AdminService = {
 
   // settings
 
-    async getSettings() {
+  async getSettings() {
     return db.appSetting.findMany();
   },
 
@@ -108,19 +108,25 @@ export const AdminService = {
 
   // dashboard stats
 
-    async getDashboardStats() {
-    const [totalUsers, totalSellers, totalOrders, pendingSellers, totalRevenue, pendingWithdrawals] =
-      await Promise.all([
-        db.user.count(),
-        db.seller.count({ where: { status: "APPROVED" } }),
-        db.order.count({ where: { status: { not: "PAYMENT_PENDING" } } }),
-        db.seller.count({ where: { status: "PENDING" } }),
-        db.payment.aggregate({
-          where: { status: "SUCCESS", type: "ORDER" },
-          _sum: { amount: true },
-        }),
-        db.withdrawRequest.count({ where: { status: "PENDING" } }),
-      ]);
+  async getDashboardStats() {
+    const [
+      totalUsers,
+      totalSellers,
+      totalOrders,
+      pendingSellers,
+      totalRevenue,
+      pendingWithdrawals,
+    ] = await Promise.all([
+      db.user.count(),
+      db.seller.count({ where: { status: "APPROVED" } }),
+      db.order.count({ where: { status: { not: "PAYMENT_PENDING" } } }),
+      db.seller.count({ where: { status: "PENDING" } }),
+      db.payment.aggregate({
+        where: { status: "SUCCESS", type: "ORDER" },
+        _sum: { amount: true },
+      }),
+      db.withdrawRequest.count({ where: { status: "PENDING" } }),
+    ]);
 
     return {
       totalUsers,
@@ -131,5 +137,4 @@ export const AdminService = {
       pendingWithdrawals,
     };
   },
-
 };
