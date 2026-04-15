@@ -1,9 +1,9 @@
-import { db } from "@/config/database";
+import { db } from "../../config/database";
 import { LoginInput, RegisterUserInput } from "./auth.schema";
-import { comparePassword, hashPassword } from "@/lib/hash";
-import { generateOTP, getOTPExpiry, isOTPExpired } from "@/lib/otp";
-import { otpEmailTemplate, sendEmail } from "@/lib/email";
-import { generateTokenPair, verifyRefreshToken } from "@/lib/jwt";
+import { comparePassword, hashPassword } from "../../lib/hash";
+import { generateOTP, getOTPExpiry, isOTPExpired } from "../../lib/otp";
+import { otpEmailTemplate, sendEmail } from "../../lib/email";
+import { generateTokenPair, verifyRefreshToken } from "../../lib/jwt";
 
 export const AuthService = {
   async registerUser(data: RegisterUserInput) {

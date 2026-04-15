@@ -1,10 +1,10 @@
-import { authenticate, checkBlacklist, requireUser } from "@/middleware/auth";
-import { validate } from "@/middleware/validate";
+import { authenticate, checkBlacklist, requireUser } from "../../middleware/auth";
+import { validate } from "../../middleware/validate";
 import { Router, Response, NextFunction } from "express";
 import { uploadPrescriptionSchema } from "./pescription.schema";
-import { AuthRequest } from "@/types";
-import { db } from "@/config/database";
-import { createdResponse, notFoundResponse, successResponse } from "@/lib/response";
+import { AuthRequest } from "../../types";
+import { db } from "../../config/database";
+import { createdResponse, notFoundResponse, successResponse } from "../../lib/response";
 
 const router = Router();
 

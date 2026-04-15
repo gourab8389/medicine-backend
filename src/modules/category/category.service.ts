@@ -1,6 +1,6 @@
-import { generateSlug } from "@/lib/slug";
+import { generateSlug } from "../../lib/slug";
 import { CreateCategoryInput, UpdateCategoryInput } from "./category.schema";
-import { db } from "@/config/database";
+import { db } from "../../config/database";
 
 export const CategoryService = {
   async create(data: CreateCategoryInput) {

@@ -1,9 +1,9 @@
 import { Response, NextFunction } from "express";
-import { verifyAccessToken } from "@/lib/jwt";
-import { AuthRequest, JwtPayload } from "@/types";
-import { forbiddenResponse, unauthorizedResponse } from "@/lib/response";
-import { db } from "@/config/database";
-import { logger } from "@/config/logger";
+import { verifyAccessToken } from "../lib/jwt";
+import { AuthRequest, JwtPayload } from "../types";
+import { forbiddenResponse, unauthorizedResponse } from "../lib/response";
+import { db } from "../config/database";
+import { logger } from "../config/logger";
 
 export async function authenticate(
   req: AuthRequest,

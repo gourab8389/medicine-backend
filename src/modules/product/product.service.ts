@@ -1,11 +1,11 @@
-import { db } from "@/config/database";
+import { db } from "../../config/database";
 import {
   CreateProductInput,
   ProductQueryInput,
   UpdateProductInput,
 } from "./product.schema";
-import { generateUniqueSlug } from "@/lib/slug";
-import { buildPaginatedResult, getPaginationParams } from "@/lib/pagination";
+import { generateUniqueSlug } from "../../lib/slug";
+import { buildPaginatedResult, getPaginationParams } from "../../lib/pagination";
 
 const PRODUCT_SELECT = {
   id: true,

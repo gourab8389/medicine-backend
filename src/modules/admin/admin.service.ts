@@ -1,10 +1,17 @@
-import { db } from "@/config/database";
+import { db } from "../../config/database";
 import { AdminLoginInput } from "./admin.schema";
-import { comparePassword } from "@/lib/hash";
-import { generateTokenPair, verifyRefreshToken } from "@/lib/jwt";
-import { buildPaginatedResult, getPaginationParams } from "@/lib/pagination";
-import { sellerApprovalEmailTemplate, sellerRejectionEmailTemplate, sendEmail } from "@/lib/email";
-import { logger } from "@/config/logger";
+import { comparePassword } from "../../lib/hash";
+import { generateTokenPair, verifyRefreshToken } from "../../lib/jwt";
+import {
+  buildPaginatedResult,
+  getPaginationParams,
+} from "../../lib/pagination";
+import {
+  sellerApprovalEmailTemplate,
+  sellerRejectionEmailTemplate,
+  sendEmail,
+} from "../../lib/email";
+import { logger } from "../../config/logger";
 
 export const AdminService = {
   async login(data: AdminLoginInput) {
@@ -87,7 +94,7 @@ export const AdminService = {
     return buildPaginatedResult(users, total, page, limit);
   },
 
-    async getSellerById(id: string) {
+  async getSellerById(id: string) {
     return db.seller.findUnique({
       where: { id },
       include: {
@@ -101,7 +108,8 @@ export const AdminService = {
   async approveSeller(id: string) {
     const seller = await db.seller.findUnique({ where: { id } });
     if (!seller) throw new Error("Seller not found");
-    if (seller.status === "APPROVED") throw new Error("Seller already approved");
+    if (seller.status === "APPROVED")
+      throw new Error("Seller already approved");
 
     await db.seller.update({ where: { id }, data: { status: "APPROVED" } });
 
@@ -138,13 +146,19 @@ export const AdminService = {
   async blacklistSeller(id: string) {
     const seller = await db.seller.findUnique({ where: { id } });
     if (!seller) throw new Error("Seller not found");
-    const newStatus = seller.status === "BLACKLISTED" ? "APPROVED" : "BLACKLISTED";
+    const newStatus =
+      seller.status === "BLACKLISTED" ? "APPROVED" : "BLACKLISTED";
     return db.seller.update({ where: { id }, data: { status: newStatus } });
   },
 
   // users
 
-    async getUsers(query: { page?: string; limit?: string; status?: string; search?: string }) {
+  async getUsers(query: {
+    page?: string;
+    limit?: string;
+    status?: string;
+    search?: string;
+  }) {
     const { skip, take, page, limit } = getPaginationParams(query);
     const where: Record<string, unknown> = {};
     if (query.status) where.status = query.status;
@@ -162,8 +176,13 @@ export const AdminService = {
         skip,
         take,
         select: {
-          id: true, name: true, email: true, phone: true, status: true,
-          isVerified: true, createdAt: true,
+          id: true,
+          name: true,
+          email: true,
+          phone: true,
+          status: true,
+          isVerified: true,
+          createdAt: true,
           _count: { select: { orders: true } },
         },
         orderBy: { createdAt: "desc" },

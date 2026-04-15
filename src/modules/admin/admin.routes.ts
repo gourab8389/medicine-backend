@@ -1,9 +1,9 @@
-import { authLimiter } from "@/config/rateLimit";
-import { validate } from "@/middleware/validate";
+import { authLimiter } from "../../config/rateLimit";
+import { validate } from "../../middleware/validate";
 import { Router } from "express";
 import { adminLoginSchema, approveRejectSellerSchema, appSettingSchema } from "./admin.schema";
 import { AdminController } from "./admin.controller";
-import { authenticate, requireAdmin } from "@/middleware/auth";
+import { authenticate, requireAdmin } from "../../middleware/auth";
 import { refreshTokenSchema } from "../seller/seller.schema";
 
 

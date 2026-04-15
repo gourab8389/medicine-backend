@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { AdminService } from "./admin.service";
-import { badRequestResponse, notFoundResponse, successResponse } from "@/lib/response";
+import { badRequestResponse, notFoundResponse, successResponse } from "../../lib/response";
 
 export const AdminController = {
   async login(req: Request, res: Response, next: NextFunction): Promise<void> {

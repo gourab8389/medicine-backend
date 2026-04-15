@@ -12,7 +12,7 @@ import paymentRoutes from "../modules/payment/payment.routes";
 import walletRoutes from "../modules/wallet/wallet.routes";
 import ratingRoutes from "../modules/rating/rating.routes";
 import subscriptionRoutes from "../modules/subscription/subscription.routes";
-import prescriptionRoutes from "@/modules/prescription/prescription.routes";
+import prescriptionRoutes from "../modules/prescription/prescription.routes";
 
 const router = Router();
 

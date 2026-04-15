@@ -1,14 +1,14 @@
-import { db } from "@/config/database";
+import { db } from "../../config/database";
 import {
   RegisterSellerInput,
   SellerLoginInput,
   SetSellerPasswordInput,
   UpdateSellerProfileInput,
 } from "./seller.schema";
-import { generateOTP, getOTPExpiry, isOTPExpired } from "@/lib/otp";
-import { otpEmailTemplate, sendEmail } from "@/lib/email";
-import { comparePassword, hashPassword } from "@/lib/hash";
-import { generateTokenPair, verifyRefreshToken } from "@/lib/jwt";
+import { generateOTP, getOTPExpiry, isOTPExpired } from "../../lib/otp";
+import { otpEmailTemplate, sendEmail } from "../../lib/email";
+import { comparePassword, hashPassword } from "../../lib/hash";
+import { generateTokenPair, verifyRefreshToken } from "../../lib/jwt";
 
 const SELLER_SAFE_SELECT = {
   id: true,

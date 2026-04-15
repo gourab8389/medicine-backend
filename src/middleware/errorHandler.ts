@@ -3,7 +3,7 @@ import { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
 import { ZodError } from "zod";
 import { logger } from "../config/logger";
 import { env } from "../config/env";
-import { Prisma } from "generated/prisma/client";
+import { Prisma } from "../../generated/prisma/client";
 
 export function notFoundHandler(req: Request, res: Response): void {
   res.status(404).json({

@@ -6,3 +6,5 @@ logs/
 .DS_Store
 generated/
 .sfdx/
+k8s/secret.yaml
+k8s/rendered/
